@@ -27,7 +27,7 @@ function repoInformationHTML(repos) {
     });
     return `<div class="clearfix repo-list">
         <p>
-        <strong> Repo List: </strong>
+        <strong>Repo List: </strong>
         </p>
         <ul>
         ${listItemsHTML.join("\n")}
@@ -35,14 +35,16 @@ function repoInformationHTML(repos) {
         </div>`
 }
 
-
-
 function fetchGithubInformation(event) {
+    $("#gh-user-data").html("");
+    $("#gh-repo-data").html("");
+
     var username = $("#gh-username").val();
     if (!username) {
         $("#gh-user-data").html(`<h2>Please enter GitHub Username</h2>`)
         return;
     }
+
     $("#gh-user-data").html(
         `<div id="loader">
         <img src="assets/css/loader.gif" alt="loading..."/>
@@ -57,16 +59,19 @@ function fetchGithubInformation(event) {
             var repoData = secondResponse[0];
             $("#gh-user-data").html(userInformationHTML(userData));
             $("#gh-repo-data").html(repoInformationHTML(repoData));
-        }, function(errorResponse) {
+        },
+        function(errorResponse) {
             if (errorResponse.status === 404) {
                 $("#gh-user-data").html(
                     `<h2>No info found for user ${username}</h2>`);
             } else {
                 console.log(errorResponse);
-                $("gh-user-data").html(
+                $("#gh-user-data").html(
                     `<h2>Error: ${errorResponse.responseJSON.message}</h2>`);
 
             }
         });
 
 }
+
+$(document).ready(fetchGithubInformation);
